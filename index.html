@@ -48,7 +48,7 @@
       flex-direction: column;
       gap: 16px;
       flex: 1;
-      padding-bottom: 64px; /* เผื่อพื้นที่แท็บล่าง */
+      padding-bottom: 64px; /* space for bottom tabs */
     }
 
     h1 {
@@ -65,7 +65,24 @@
       text-align: center;
       font-size: 12px;
       color: #6b7280;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
+    }
+
+    .month-balance {
+      margin: 4px auto 10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #ecfeff;
+      border: 1px solid #bae6fd;
+      font-size: 12px;
+      color: #0369a1;
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .month-balance strong {
+      font-weight: 700;
     }
 
     h2 {
@@ -117,7 +134,7 @@
       background: #ffffff;
     }
 
-    /* Toggle รายรับ / รายจ่าย */
+    /* ประเภทรายการ */
     .type-toggle-wrapper {
       display: flex;
       justify-content: center;
@@ -167,8 +184,7 @@
       flex-wrap: wrap;
     }
 
-    .btn-primary,
-    .btn-danger {
+    .btn-primary {
       flex: 1 1 140px;
       text-align: center;
       border-radius: 999px;
@@ -178,9 +194,6 @@
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s;
-    }
-
-    .btn-primary {
       background: linear-gradient(135deg, #0ea5e9, #6366f1);
       color: #ffffff;
       box-shadow: 0 8px 18px rgba(59,130,246,0.45);
@@ -190,14 +203,15 @@
       box-shadow: 0 3px 8px rgba(59,130,246,0.5);
     }
 
-    .btn-danger {
-      background: #fee2e2;
+    .btn-danger-ghost {
+      border-radius: 999px;
+      border: 1px solid #fecaca;
+      background: #fff1f2;
       color: #b91c1c;
-      box-shadow: 0 5px 12px rgba(248,113,113,0.4);
-    }
-    .btn-danger:active {
-      transform: scale(0.97);
-      background: #fecaca;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
 
     /* การ์ดหมวดหมู่ */
@@ -225,14 +239,8 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .cat-icon {
-      font-size: 20px;
-    }
-
-    .cat-label {
-      text-align: center;
-      line-height: 1.2;
-    }
+    .cat-icon { font-size: 20px; }
+    .cat-label { text-align: center; line-height: 1.2; }
 
     .cat-card.active {
       border-color: #fb923c;
@@ -257,9 +265,7 @@
       color: #4b5563;
     }
 
-    .filter-row span.label {
-      font-weight: 500;
-    }
+    .filter-row span.label { font-weight: 500; }
 
     .filter-row input[type="month"] {
       width: auto;
@@ -267,17 +273,6 @@
       padding: 6px 10px;
       border-radius: 999px;
       font-size: 12px;
-    }
-
-    .filter-clear-btn {
-      border: none;
-      background: transparent;
-      color: #64748b;
-      font-size: 12px;
-      text-decoration: underline;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      padding: 4px 6px;
     }
 
     .balance-box {
@@ -361,11 +356,7 @@
       border: 1px solid rgba(226,232,240,0.9);
     }
 
-    .legend-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .legend-left { display: flex; align-items: center; gap: 6px; }
 
     .legend-dot {
       width: 10px;
@@ -381,53 +372,96 @@
     .legend-amount.income { color: var(--income-color); }
     .legend-amount.expense { color: var(--expense-color); }
 
-    /* ตารางรายการ */
-    .table-panel {
-      border-radius: var(--radius-card);
-      padding: 10px 10px 12px;
-      border: 1px solid rgba(148,163,184,0.35);
-      background: rgba(255,255,255,0.96);
-    }
-
-    .table-wrapper {
+    /* รายงานแบบแบ่งวัน */
+    .report-container {
       max-height: 260px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    table {
+    .day-card {
+      border-radius: 18px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      box-shadow: 0 4px 10px rgba(148,163,184,0.35);
+      overflow: hidden;
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 12px;
+      background: #eef2ff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .day-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .day-total {
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    .day-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 12px;
+      background: #ffffff;
     }
 
-    th, td {
-      padding: 6px 6px;
+    .day-table th,
+    .day-table td {
+      padding: 6px 8px;
       border-bottom: 1px solid #e5e7eb;
       text-align: left;
     }
 
-    th {
+    .day-table th {
       background: #f3f4f6;
-      position: sticky;
-      top: 0;
-      z-index: 1;
+      font-weight: 600;
     }
 
-    tr:nth-child(even) td { background: #f9fafb; }
+    .day-table tr:last-child td {
+      border-bottom: none;
+    }
 
     .text-right { text-align: right; }
 
     .tag-income { color: var(--income-color); font-weight: 600; }
     .tag-expense { color: var(--expense-color); font-weight: 600; }
 
+    .row-actions {
+      display: flex;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+
+    .row-btn {
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 2px 6px;
+      font-size: 11px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .row-btn.edit { color: #0ea5e9; }
+    .row-btn.delete { color: #b91c1c; }
+
     .no-data {
       text-align: center;
       color: #9ca3af;
       padding: 10px 0;
+      font-size: 12px;
     }
 
     /* Tabs ด้านล่าง */
@@ -490,9 +524,13 @@
         <div class="panel panel-form">
           <h1>Money note</h1>
           <div class="subtitle">จดรายรับรายจ่ายแบบง่าย ๆ ทุกวัน</div>
+          <div class="month-balance">
+            คงเหลือเดือนนี้:
+            <strong id="monthBalanceValue">0.00 ฿</strong>
+          </div>
 
           <div class="field">
-            <label for="date">วันที่</label>
+            <label for="date">วันที่ (ปี ค.ศ.)</label>
             <input type="date" id="date">
           </div>
 
@@ -512,7 +550,7 @@
 
           <div class="field">
             <label for="title">รายการ</label>
-            <input type="text" id="title" placeholder="เช่น เงินเดือน, ข้าวเย็น, ผ่อนรถ">
+            <input type="text" id="title" placeholder="เช่น เงินเดือน, กาแฟ, คอนโด">
           </div>
 
           <div class="field">
@@ -523,13 +561,12 @@
           <div class="field">
             <label>หมวดหมู่</label>
             <div id="categoryGrid" class="category-grid">
-              <!-- ปุ่มหมวดหมู่จะถูกเติมด้วย JS -->
+              <!-- ใส่ด้วย JS -->
             </div>
           </div>
 
           <div class="button-row">
             <button class="btn-primary" id="btnSave">บันทึกรายการ</button>
-            <button class="btn-danger" id="btnClear">ล้างข้อมูลทั้งหมด</button>
           </div>
         </div>
       </div>
@@ -542,7 +579,7 @@
           <div class="filter-row">
             <span class="label">ดูตามเดือน / ปี:</span>
             <input type="month" id="filterMonth">
-            <button class="filter-clear-btn" id="btnClearFilter">ดูทั้งหมด</button>
+            <button class="btn-danger-ghost" id="btnClearAll">ล้างข้อมูลทั้งหมด</button>
           </div>
 
           <div class="balance-box">
@@ -578,21 +615,8 @@
 
         <div class="table-panel">
           <h2>รายการทั้งหมด (ตามตัวกรอง)</h2>
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>วันที่</th>
-                  <th>ประเภท</th>
-                  <th>รายการ</th>
-                  <th>หมวด</th>
-                  <th class="text-right">ยอดเงิน</th>
-                </tr>
-              </thead>
-              <tbody id="transactionTableBody">
-                <!-- เติมด้วย JS -->
-              </tbody>
-            </table>
+          <div id="reportContainer" class="report-container">
+            <!-- เติมด้วย JS -->
           </div>
         </div>
       </div>
@@ -612,32 +636,43 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'money_note_transactions_v4';
+    const STORAGE_KEY = 'money_note_transactions_v5';
+
     let currentType = 'income';
     let selectedCategoryKey = null;
+    let editingId = null;
 
     const incomeCategories = [
-      { key: 'salary', label: 'เงินเดือน', icon: '💼' },
-      { key: 'bonus', label: 'โบนัส', icon: '🎁' },
-      { key: 'dividend', label: 'ปันผลหุ้น', icon: '💸' },
-      { key: 'stockGain', label: 'กำไรหุ้น / เทรด', icon: '📈' },
-      { key: 'interest', label: 'ดอกเบี้ยเงินฝาก', icon: '💰' },
-      { key: 'side', label: 'รายได้เสริม', icon: '🌟' },
-      { key: 'otherIncome', label: 'อื่น ๆ', icon: '✨' }
+      { key: 'salary',     label: 'เงินเดือน',          icon: '💼' },
+      { key: 'bonus',      label: 'โบนัส',              icon: '🎁' },
+      { key: 'dividend',   label: 'ปันผลหุ้น',          icon: '💸' },
+      { key: 'stockGain',  label: 'กำไรหุ้น / เทรด',   icon: '📈' },
+      { key: 'interest',   label: 'ดอกเบี้ยเงินฝาก',    icon: '💰' },
+      { key: 'side',       label: 'รายได้เสริม',        icon: '🌟' },
+      { key: 'otherIncome',label: 'อื่น ๆ',             icon: '✨' }
     ];
 
     const expenseCategories = [
-      { key: 'food', label: 'ค่าอาหาร', icon: '🍚' },
-      { key: 'house', label: 'ค่าบ้าน', icon: '🏠' },
-      { key: 'car', label: 'ค่ารถ', icon: '🚗' },
-      { key: 'transport', label: 'ค่าเดินทาง', icon: '🚆' },
-      { key: 'shopping', label: 'ช้อปปิ้ง', icon: '🛍️' },
-      { key: 'entertain', label: 'บันเทิง', icon: '🎬' },
-      { key: 'health', label: 'สุขภาพ', icon: '🏥' },
-      { key: 'bill', label: 'บิล/ค่าสาธารณูปโภค', icon: '💡' },
-      { key: 'otherExpense', label: 'อื่น ๆ', icon: '✨' }
+      { key: 'food',         label: 'ค่าอาหาร',           icon: '🍚' },
+      { key: 'house',        label: 'ค่าบ้าน',            icon: '🏠' },
+      { key: 'car',          label: 'ค่ารถ',              icon: '🚗' },
+      { key: 'transport',    label: 'ค่าเดินทาง',         icon: '🚆' },
+      { key: 'shopping',     label: 'ช้อปปิ้ง',           icon: '🛍️' },
+      { key: 'entertain',    label: 'บันเทิง',            icon: '🎬' },
+      { key: 'health',       label: 'สุขภาพ',             icon: '🏥' },
+      { key: 'bill',         label: 'บิล/ค่าสาธารณูปโภค', icon: '💡' },
+      { key: 'otherExpense', label: 'อื่น ๆ',             icon: '✨' }
     ];
 
+    function getCategoryList(type) {
+      return type === 'income' ? incomeCategories : expenseCategories;
+    }
+
+    function findCategory(type, key) {
+      return getCategoryList(type).find(c => c.key === key);
+    }
+
+    /* --- Storage helpers --- */
     function loadTransactions() {
       const data = localStorage.getItem(STORAGE_KEY);
       return data ? JSON.parse(data) : [];
@@ -677,14 +712,21 @@
       filterMonth.max = ym;
     }
 
-    function getCurrentCategoryList() {
-      return currentType === 'income' ? incomeCategories : expenseCategories;
+    /* --- UI helpers --- */
+
+    function formatDisplayDateBE(dateStr) {
+      if (!dateStr) return '';
+      const [y, m, d] = dateStr.split('-').map(n => parseInt(n, 10));
+      const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                      'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      const yearBE = y + 543;
+      return `${d} ${months[m - 1]} ${yearBE}`;
     }
 
     function populateCategoryGrid() {
       const container = document.getElementById('categoryGrid');
       container.innerHTML = '';
-      const categories = getCurrentCategoryList();
+      const categories = getCategoryList(currentType);
 
       categories.forEach(cat => {
         const btn = document.createElement('button');
@@ -755,10 +797,10 @@
     }
 
     function getFilteredTransactions(allList) {
-      const filterMonth = document.getElementById('filterMonth').value;
-      if (!filterMonth) return allList;
+      const filterMonthVal = document.getElementById('filterMonth').value;
+      if (!filterMonthVal) return allList;
 
-      const [yFilter, mFilter] = filterMonth.split('-').map(x => parseInt(x, 10));
+      const [yFilter, mFilter] = filterMonthVal.split('-').map(x => parseInt(x, 10));
 
       return allList.filter(item => {
         if (!item.date) return false;
@@ -767,31 +809,100 @@
       });
     }
 
-    function render() {
-      const allList = loadTransactions();
-      const list = getFilteredTransactions(allList);
+    function updateMonthBalance(allList) {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth() + 1;
 
-      const tbody = document.getElementById('transactionTableBody');
-      tbody.innerHTML = '';
+      let balanceMonth = 0;
+
+      allList.forEach(item => {
+        const [yy, mm] = item.date.split('-').map(v => parseInt(v, 10));
+        if (yy === y && mm === m) {
+          balanceMonth += item.type === 'income' ? item.amount : -item.amount;
+        }
+      });
+
+      document.getElementById('monthBalanceValue').textContent =
+        formatNumber(balanceMonth) + ' ฿';
+    }
+
+    function render(allList) {
+      const list = getFilteredTransactions(allList);
+      const reportContainer = document.getElementById('reportContainer');
+      reportContainer.innerHTML = '';
 
       let totalIncome = 0;
       let totalExpense = 0;
 
       if (list.length === 0) {
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.colSpan = 5;
-        td.className = 'no-data';
-        td.textContent = 'ยังไม่มีรายการในช่วงนี้';
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-      } else {
-        list.forEach(item => {
-          const tr = document.createElement('tr');
+        const div = document.createElement('div');
+        div.className = 'no-data';
+        div.textContent = 'ยังไม่มีรายการในช่วงนี้';
+        reportContainer.appendChild(div);
 
-          const tdDate = document.createElement('td');
-          tdDate.textContent = item.date;
-          tr.appendChild(tdDate);
+        document.getElementById('balance').textContent = '0.00 ฿';
+        updatePieChart(0, 0);
+        return;
+      }
+
+      // group by date
+      const groups = {};
+      list.forEach(item => {
+        if (!groups[item.date]) groups[item.date] = [];
+        groups[item.date].push(item);
+
+        if (item.type === 'income') {
+          totalIncome += item.amount;
+        } else {
+          totalExpense += item.amount;
+        }
+      });
+
+      // sort date desc
+      const dates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+
+      dates.forEach(dateStr => {
+        const dayItems = groups[dateStr];
+
+        const card = document.createElement('div');
+        card.className = 'day-card';
+
+        const header = document.createElement('div');
+        header.className = 'day-header';
+
+        const title = document.createElement('div');
+        title.className = 'day-title';
+        title.textContent = formatDisplayDateBE(dateStr); // แสดง พ.ศ.
+
+        const dayNet = dayItems.reduce((sum, it) =>
+          sum + (it.type === 'income' ? it.amount : -it.amount), 0);
+        const totalEl = document.createElement('div');
+        totalEl.className = 'day-total';
+        totalEl.textContent = 'สุทธิ: ' + formatNumber(dayNet) + ' ฿';
+
+        header.appendChild(title);
+        header.appendChild(totalEl);
+        card.appendChild(header);
+
+        const table = document.createElement('table');
+        table.className = 'day-table';
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+          <tr>
+            <th>ประเภท</th>
+            <th>รายการ</th>
+            <th>หมวด</th>
+            <th class="text-right">ยอดเงิน</th>
+            <th class="text-right">จัดการ</th>
+          </tr>
+        `;
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+
+        dayItems.forEach(item => {
+          const tr = document.createElement('tr');
 
           const tdType = document.createElement('td');
           tdType.innerHTML = item.type === 'income'
@@ -803,8 +914,10 @@
           tdTitle.textContent = item.title || '';
           tr.appendChild(tdTitle);
 
+          const catObj = findCategory(item.type, item.categoryKey);
+          const catText = catObj ? `${catObj.label} ${catObj.icon}` : '';
           const tdCategory = document.createElement('td');
-          tdCategory.textContent = item.category;
+          tdCategory.textContent = catText;
           tr.appendChild(tdCategory);
 
           const tdAmount = document.createElement('td');
@@ -812,23 +925,49 @@
           tdAmount.textContent = formatNumber(item.amount);
           tr.appendChild(tdAmount);
 
+          const tdActions = document.createElement('td');
+          tdActions.className = 'text-right';
+          const actionDiv = document.createElement('div');
+          actionDiv.className = 'row-actions';
+
+          const btnEdit = document.createElement('button');
+          btnEdit.className = 'row-btn edit';
+          btnEdit.textContent = '✏️';
+          btnEdit.addEventListener('click', () => startEdit(item.id));
+
+          const btnDelete = document.createElement('button');
+          btnDelete.className = 'row-btn delete';
+          btnDelete.textContent = '🗑️';
+          btnDelete.addEventListener('click', () => deleteTransaction(item.id));
+
+          actionDiv.appendChild(btnEdit);
+          actionDiv.appendChild(btnDelete);
+          tdActions.appendChild(actionDiv);
+          tr.appendChild(tdActions);
+
           tbody.appendChild(tr);
-
-          if (item.type === 'income') {
-            totalIncome += item.amount;
-          } else {
-            totalExpense += item.amount;
-          }
         });
-      }
 
+        table.appendChild(tbody);
+        card.appendChild(table);
+        reportContainer.appendChild(card);
+      });
+
+      // update summary
       document.getElementById('balance').textContent =
         formatNumber(totalIncome - totalExpense) + ' ฿';
-
       updatePieChart(totalIncome, totalExpense);
     }
 
-    function addTransaction() {
+    function refreshUI() {
+      const allList = loadTransactions();
+      render(allList);
+      updateMonthBalance(allList);
+    }
+
+    /* --- CRUD --- */
+
+    function addOrUpdateTransaction() {
       const dateInput = document.getElementById('date');
       const date = dateInput.value;
       const maxDate = dateInput.max || todayString();
@@ -853,36 +992,94 @@
         return;
       }
 
-      const catList = getCurrentCategoryList();
+      const catList = getCategoryList(currentType);
       const catObj = catList.find(c => c.key === selectedCategoryKey);
       if (!catObj) {
         alert('กรุณาเลือกหมวดหมู่');
         return;
       }
-      const categoryText = `${catObj.label} ${catObj.icon}`;
 
       const list = loadTransactions();
-      list.push({
-        date,
-        type: currentType,
-        title,
-        category: categoryText,
-        amount
-      });
+
+      if (editingId !== null) {
+        const idx = list.findIndex(t => t.id === editingId);
+        if (idx !== -1) {
+          list[idx].date = date;
+          list[idx].type = currentType;
+          list[idx].title = title;
+          list[idx].amount = amount;
+          list[idx].categoryKey = catObj.key;
+        }
+        editingId = null;
+        document.getElementById('btnSave').textContent = 'บันทึกรายการ';
+      } else {
+        list.push({
+          id: Date.now(),
+          date,
+          type: currentType,
+          title,
+          amount,
+          categoryKey: catObj.key
+        });
+      }
+
       saveTransactions(list);
 
       amountInput.value = '';
       titleInput.value = '';
+      selectedCategoryKey = null;
+      populateCategoryGrid();
 
-      render();
+      refreshUI();
+      alert('บันทึกเรียบร้อย');
     }
 
     function clearAll() {
       if (confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) {
         localStorage.removeItem(STORAGE_KEY);
-        render();
+        editingId = null;
+        document.getElementById('btnSave').textContent = 'บันทึกรายการ';
+        refreshUI();
       }
     }
+
+    function startEdit(id) {
+      const list = loadTransactions();
+      const item = list.find(t => t.id === id);
+      if (!item) return;
+
+      editingId = id;
+
+      // สลับไปแท็บบันทึก
+      switchTab('tab1');
+
+      // เติมข้อมูล
+      document.getElementById('date').value = item.date;
+      setType(item.type);
+      selectedCategoryKey = item.categoryKey;
+      populateCategoryGrid();
+
+      document.getElementById('title').value = item.title || '';
+      document.getElementById('amount').value = item.amount;
+
+      document.getElementById('btnSave').textContent = 'บันทึกการแก้ไข';
+    }
+
+    function deleteTransaction(id) {
+      if (!confirm('ต้องการลบรายการนี้หรือไม่?')) return;
+      let list = loadTransactions();
+      list = list.filter(t => t.id !== id);
+      saveTransactions(list);
+
+      if (editingId === id) {
+        editingId = null;
+        document.getElementById('btnSave').textContent = 'บันทึกรายการ';
+      }
+
+      refreshUI();
+    }
+
+    /* --- Tabs --- */
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => {
@@ -902,18 +1099,13 @@
         .addEventListener('click', () => setType('expense'));
 
       document.getElementById('btnSave')
-        .addEventListener('click', addTransaction);
-      document.getElementById('btnClear')
-        .addEventListener('click', clearAll);
+        .addEventListener('click', addOrUpdateTransaction);
 
       document.getElementById('filterMonth')
-        .addEventListener('change', render);
-      document.getElementById('btnClearFilter')
-        .addEventListener('click', () => {
-          const filterMonth = document.getElementById('filterMonth');
-          filterMonth.value = '';
-          render();
-        });
+        .addEventListener('change', refreshUI);
+
+      document.getElementById('btnClearAll')
+        .addEventListener('click', clearAll);
 
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -926,8 +1118,8 @@
     window.onload = function () {
       setTodayAndMax();
       setupEvents();
-      populateCategoryGrid();
-      render();
+      setType('income');
+      refreshUI();
     };
   </script>
 </body>
