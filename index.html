@@ -12,12 +12,12 @@
 
   <style>
     :root {
-      --border-main: 1px solid #d1d5db;
-      --radius-card: 14px;
-      --shadow-card: 0 4px 10px rgba(0,0,0,0.06);
-      --accent: #0ea5e9;
-      --income: #16a34a;
-      --expense: #dc2626;
+      --border-main: 1px solid #e5e7eb;
+      --radius-card: 16px;
+      --shadow-card: 0 8px 20px rgba(15, 23, 42, 0.10);
+      --accent: #6366f1;
+      --income: #22c55e;
+      --expense: #fb7185;
     }
 
     * {
@@ -28,8 +28,8 @@
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
       margin: 0;
       padding: 12px;
-      background: #f5f5f7;
-      color: #111827;
+      background: linear-gradient(135deg, #eff6ff, #fef9c3);
+      color: #0f172a;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -37,10 +37,12 @@
       max-width: 520px;
       margin: 0 auto;
       background: #ffffff;
-      border: 1px solid #cbd5e1;
+      border-radius: 24px;
+      border: 1px solid #e5e7eb;
       min-height: 96vh;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 15px 40px rgba(15, 23, 42, 0.18);
     }
 
     .page-inner {
@@ -55,7 +57,8 @@
       font-size: 20px;
       text-align: center;
       margin: 4px 0 10px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
 
     h2 {
@@ -64,16 +67,18 @@
       font-weight: 600;
     }
 
-    /* ฟอร์ม Money note (ด้านบน) */
+    /* การ์ด */
     .panel {
       border-radius: var(--radius-card);
-      padding: 12px 12px 14px;
-      border: 1px solid #e5e7eb;
+      padding: 14px 14px 16px;
+      border: var(--border-main);
       background: #ffffff;
     }
 
     .panel-form {
       box-shadow: var(--shadow-card);
+      background: linear-gradient(135deg, #eef2ff, #ecfeff);
+      border: none;
     }
 
     label {
@@ -101,17 +106,18 @@
     textarea {
       width: 100%;
       padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      border: 1px solid #cbd5f5;
       outline: none;
-      background: #f9fafb;
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(6px);
     }
 
     input:focus,
     select:focus,
     textarea:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(14,165,233,0.18);
+      box-shadow: 0 0 0 2px rgba(99,102,241,0.25);
       background: #ffffff;
     }
 
@@ -121,36 +127,55 @@
     }
 
     /* Toggle รายรับ / รายจ่าย */
+    .field-type {
+      text-align: center;
+    }
+    .field-type label {
+      text-align: center;
+    }
+
     .type-toggle {
       display: inline-flex;
       border-radius: 999px;
-      border: 1px solid #d1d5db;
-      padding: 2px;
+      border: 1px solid #e5e7eb;
+      padding: 3px;
       background: #f9fafb;
+      margin-top: 4px;
     }
 
-    .type-btn {
-      flex: 1;
-      border: none;
+    .type-option {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 16px;
       border-radius: 999px;
-      padding: 6px 12px;
       font-size: 13px;
-      background: transparent;
-      color: #4b5563;
+      color: #6b7280;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      transition: all 0.15s ease-out;
     }
 
-    .type-btn.active-income {
-      background: #ecfdf3;
-      color: var(--income);
-      font-weight: 600;
+    .type-option input {
+      display: none;
     }
 
-    .type-btn.active-expense {
-      background: #fef2f2;
-      color: var(--expense);
+    .type-option span {
+      pointer-events: none; /* ให้คลิกได้ทั้งปุ่มรวมถึงตัวหนังสือ */
+    }
+
+    .type-option.selected-income {
+      background: #dcfce7;
+      color: #16a34a;
       font-weight: 600;
+      box-shadow: 0 2px 5px rgba(22, 163, 74, 0.25);
+    }
+
+    .type-option.selected-expense {
+      background: #ffe4e6;
+      color: #be123c;
+      font-weight: 600;
+      box-shadow: 0 2px 5px rgba(190, 18, 60, 0.25);
     }
 
     .button-row {
@@ -173,24 +198,25 @@
     }
 
     .btn-primary {
-      background: #111827;
+      background: linear-gradient(135deg, #6366f1, #22c55e);
       color: #ffffff;
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.45);
     }
     .btn-primary:active {
-      background: #020617;
-      transform: scale(0.98);
+      transform: scale(0.97);
+      box-shadow: 0 3px 10px rgba(79, 70, 229, 0.6);
     }
 
     .btn-danger {
-      background: #e5e7eb;
-      color: #ef4444;
+      background: #fee2e2;
+      color: #b91c1c;
     }
     .btn-danger:active {
-      background: #d1d5db;
-      transform: scale(0.98);
+      transform: scale(0.97);
+      background: #fecaca;
     }
 
-    /* แดชบอร์ด (ส่วนล่าง) */
+    /* สรุป & Pie chart */
     .summary-row {
       display: flex;
       gap: 8px;
@@ -200,89 +226,91 @@
 
     .summary-item {
       flex: 1 1 140px;
-      background: #f9fafb;
-      border-radius: 10px;
-      padding: 8px 10px;
-      border: 1px solid #e5e7eb;
+      background: linear-gradient(135deg, #ecfeff, #e0f2fe);
+      border-radius: 14px;
+      padding: 10px 12px;
+      border: 1px solid #bae6fd;
     }
 
     .summary-label {
       font-size: 12px;
-      color: #6b7280;
+      color: #0ea5e9;
     }
 
     .summary-value {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 800;
       margin-top: 2px;
     }
 
-    .income {
-      color: var(--income);
-    }
-
-    .expense {
-      color: var(--expense);
-    }
-
-    /* กราฟแถบแนวนอน */
     .chart-section-title {
       font-size: 13px;
       font-weight: 600;
-      margin: 4px 0;
+      margin: 6px 0 4px;
     }
 
-    .chart-bar-wrapper {
-      margin-bottom: 6px;
-    }
-
-    .chart-label-row {
+    .pie-wrapper {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      font-size: 11px;
-      color: #6b7280;
-      margin-bottom: 2px;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
     }
 
-    .chart-bar-bg {
-      width: 100%;
-      height: 16px;
+    .pie-chart {
+      width: 140px;
+      height: 140px;
+      border-radius: 999px;
+      margin: 0 auto;
+      position: relative;
       background: #e5e7eb;
-      border-radius: 999px;
-      overflow: hidden;
     }
 
-    .chart-bar {
-      height: 100%;
-      border-radius: 999px;
+    .pie-chart::after {
+      content: "";
+      position: absolute;
+      inset: 26px;
+      border-radius: 50%;
+      background: #f9fafb;
+    }
+
+    .pie-center-label {
+      position: absolute;
+      inset: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       font-size: 11px;
-      white-space: nowrap;
-      padding: 0 6px;
-      box-sizing: border-box;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .pie-center-label span:nth-child(2) {
+      font-weight: 600;
+      margin-top: 2px;
     }
 
-    .chart-bar-income {
-      background: #bbf7d0;
-      color: #166534;
-    }
-
-    .chart-bar-expense {
-      background: #fecaca;
-      color: #b91c1c;
-    }
-
-    .chart-legend {
+    .pie-legend {
+      flex: 1 1 120px;
+      font-size: 12px;
       display: flex;
-      gap: 10px;
-      font-size: 11px;
-      margin-top: 4px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    .legend-item {
+    .pie-legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 4px 6px;
+      border-radius: 999px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .pie-legend-left {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -294,8 +322,12 @@
       border-radius: 50%;
     }
 
-    .legend-income { background: #16a34a; }
-    .legend-expense { background: #dc2626; }
+    .legend-income { background: var(--income); }
+    .legend-expense { background: var(--expense); }
+
+    .pie-amount {
+      font-weight: 600;
+    }
 
     /* ตารางหมวดหมู่ */
     .cat-table {
@@ -340,7 +372,7 @@
       max-height: 260px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      border-radius: 10px;
+      border-radius: 14px;
       border: 1px solid #e5e7eb;
       background: #ffffff;
     }
@@ -398,7 +430,7 @@
 <body>
   <div class="page-frame">
     <div class="page-inner">
-      <!-- ส่วนบน: Money note -->
+      <!-- ฟอร์มด้านบน -->
       <div class="panel panel-form">
         <h1>Money note</h1>
 
@@ -407,13 +439,17 @@
           <input type="date" id="date">
         </div>
 
-        <div class="field">
+        <div class="field field-type">
           <label>ประเภทรายการ</label>
           <div class="type-toggle">
-            <button type="button" class="type-btn active-income" id="btnIncome"
-                    onclick="setType('income')">รายรับ</button>
-            <button type="button" class="type-btn" id="btnExpense"
-                    onclick="setType('expense')">รายจ่าย</button>
+            <label class="type-option selected-income" id="optIncome" onclick="setType('income')">
+              <input type="radio" name="entryType" value="income" checked>
+              <span>รายรับ</span>
+            </label>
+            <label class="type-option" id="optExpense" onclick="setType('expense')">
+              <input type="radio" name="entryType" value="expense">
+              <span>รายจ่าย</span>
+            </label>
           </div>
         </div>
 
@@ -452,44 +488,40 @@
         </div>
       </div>
 
-      <!-- ส่วนล่าง: สรุป & แดชบอร์ด -->
+      <!-- สรุป & Pie chart -->
       <div class="panel">
         <h2>สรุป & แดชบอร์ด</h2>
 
         <div class="summary-row">
           <div class="summary-item">
-            <div class="summary-label">รายรับรวม</div>
-            <div id="totalIncome" class="summary-value income">0.00 ฿</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">รายจ่ายรวม</div>
-            <div id="totalExpense" class="summary-value expense">0.00 ฿</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">คงเหลือ</div>
+            <div class="summary-label">ยอดเงินคงเหลือ</div>
             <div id="balance" class="summary-value">0.00 ฿</div>
           </div>
         </div>
 
-        <div class="chart-section-title">กราฟเปรียบเทียบรายรับ vs รายจ่าย</div>
-        <div class="chart-bar-wrapper">
-          <div class="chart-label-row">
-            <span>รายรับ</span>
-            <span>รายจ่าย</span>
-          </div>
-          <div class="chart-bar-bg">
-            <div id="incomeBar" class="chart-bar chart-bar-income" style="width: 50%;">0.00 ฿</div>
-          </div>
-          <div style="height: 4px;"></div>
-          <div class="chart-bar-bg">
-            <div id="expenseBar" class="chart-bar chart-bar-expense" style="width: 50%;">0.00 ฿</div>
-          </div>
-          <div class="chart-legend">
-            <div class="legend-item">
-              <span class="legend-dot legend-income"></span> รายรับ
+        <div class="chart-section-title">ภาพรวมรายรับ-รายจ่าย</div>
+        <div class="pie-wrapper">
+          <div class="pie-chart" id="pieChart">
+            <div class="pie-center-label">
+              <span>รวมทั้งหมด</span>
+              <span id="pieTotalValue">0.00 ฿</span>
             </div>
-            <div class="legend-item">
-              <span class="legend-dot legend-expense"></span> รายจ่าย
+          </div>
+
+          <div class="pie-legend">
+            <div class="pie-legend-item">
+              <div class="pie-legend-left">
+                <span class="legend-dot legend-income"></span>
+                <span>รายรับ</span>
+              </div>
+              <span id="pieIncomeValue" class="pie-amount">0.00 ฿</span>
+            </div>
+            <div class="pie-legend-item">
+              <div class="pie-legend-left">
+                <span class="legend-dot legend-expense"></span>
+                <span>รายจ่าย</span>
+              </div>
+              <span id="pieExpenseValue" class="pie-amount">0.00 ฿</span>
             </div>
           </div>
         </div>
@@ -533,7 +565,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'money_note_transactions_v1';
+    const STORAGE_KEY = 'money_note_transactions_v2';
     let currentType = 'income';
 
     function loadTransactions() {
@@ -562,15 +594,15 @@
 
     function setType(type) {
       currentType = type;
-      const btnIncome = document.getElementById('btnIncome');
-      const btnExpense = document.getElementById('btnExpense');
+      const optIncome = document.getElementById('optIncome');
+      const optExpense = document.getElementById('optExpense');
 
       if (type === 'income') {
-        btnIncome.classList.add('active-income');
-        btnExpense.classList.remove('active-expense');
+        optIncome.classList.add('selected-income');
+        optExpense.classList.remove('selected-expense');
       } else {
-        btnExpense.classList.add('active-expense');
-        btnIncome.classList.remove('active-income');
+        optExpense.classList.add('selected-expense');
+        optIncome.classList.remove('selected-income');
       }
     }
 
@@ -587,6 +619,192 @@
       }
     }
 
-    function renderDashboardBars(totalIncome, totalExpense) {
-      const incomeBar = document.getElementById('incomeBar');
-      const expenseBar = document.getElemen
+    function renderPieChart(totalIncome, totalExpense) {
+      const pie = document.getElementById('pieChart');
+      const incomeElem = document.getElementById('pieIncomeValue');
+      const expenseElem = document.getElementById('pieExpenseValue');
+      const totalElem = document.getElementById('pieTotalValue');
+
+      const total = totalIncome + totalExpense;
+
+      incomeElem.textContent = formatNumber(totalIncome) + ' ฿';
+      expenseElem.textContent = formatNumber(totalExpense) + ' ฿';
+      totalElem.textContent = formatNumber(total) + ' ฿';
+
+      if (total <= 0) {
+        pie.style.background = '#e5e7eb';
+        return;
+      }
+
+      const incomePercent = (totalIncome / total) * 100;
+      const incomeColor = '#22c55e';
+      const expenseColor = '#fb7185';
+
+      pie.style.background =
+        `conic-gradient(${incomeColor} 0 ${incomePercent}%, ${expenseColor} ${incomePercent}% 100%)`;
+    }
+
+    function renderExpenseCategorySummary(expenseCategories, totalExpense) {
+      const tbody = document.getElementById('expenseCategoryBody');
+      tbody.innerHTML = '';
+
+      const catNames = Object.keys(expenseCategories);
+      if (catNames.length === 0) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 3;
+        td.className = 'no-data';
+        td.textContent = 'ยังไม่มีรายการรายจ่าย';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+      }
+
+      catNames.sort((a, b) => expenseCategories[b] - expenseCategories[a]);
+
+      catNames.forEach(cat => {
+        const amount = expenseCategories[cat];
+        const percent = totalExpense > 0 ? (amount * 100 / totalExpense) : 0;
+
+        const tr = document.createElement('tr');
+
+        const tdCat = document.createElement('td');
+        const span = document.createElement('span');
+        span.className = 'cat-chip ' + getCategoryClass(cat);
+        span.textContent = cat;
+        tdCat.appendChild(span);
+        tr.appendChild(tdCat);
+
+        const tdAmt = document.createElement('td');
+        tdAmt.className = 'text-right';
+        tdAmt.textContent = formatNumber(amount);
+        tr.appendChild(tdAmt);
+
+        const tdPercent = document.createElement('td');
+        tdPercent.className = 'text-right';
+        tdPercent.textContent = percent.toFixed(1) + ' %';
+        tr.appendChild(tdPercent);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function render() {
+      const list = loadTransactions();
+      const tbody = document.getElementById('transactionTableBody');
+      tbody.innerHTML = '';
+
+      let totalIncome = 0;
+      let totalExpense = 0;
+      const expenseCategories = {};
+
+      if (list.length === 0) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 5;
+        td.className = 'no-data';
+        td.textContent = 'ยังไม่มีรายการ';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      } else {
+        list.forEach(item => {
+          const tr = document.createElement('tr');
+
+          const tdDate = document.createElement('td');
+          tdDate.textContent = item.date;
+          tr.appendChild(tdDate);
+
+          const tdType = document.createElement('td');
+          tdType.innerHTML = item.type === 'income'
+            ? '<span class="tag-income">รับ</span>'
+            : '<span class="tag-expense">จ่าย</span>';
+          tr.appendChild(tdType);
+
+          const tdTitle = document.createElement('td');
+          tdTitle.textContent = item.title || '';
+          tr.appendChild(tdTitle);
+
+          const tdCategory = document.createElement('td');
+          tdCategory.textContent = item.category;
+          tr.appendChild(tdCategory);
+
+          const tdAmount = document.createElement('td');
+          tdAmount.className = 'text-right';
+          tdAmount.textContent = formatNumber(item.amount);
+          tr.appendChild(tdAmount);
+
+          tbody.appendChild(tr);
+
+          if (item.type === 'income') {
+            totalIncome += item.amount;
+          } else {
+            totalExpense += item.amount;
+            expenseCategories[item.category] =
+              (expenseCategories[item.category] || 0) + item.amount;
+          }
+        });
+      }
+
+      // ยอดคงเหลือ
+      document.getElementById('balance').textContent =
+        formatNumber(totalIncome - totalExpense) + ' ฿';
+
+      // Pie chart & หมวดหมู่
+      renderPieChart(totalIncome, totalExpense);
+      renderExpenseCategorySummary(expenseCategories, totalExpense);
+    }
+
+    function addTransaction() {
+      const date = document.getElementById('date').value;
+      const titleInput = document.getElementById('title');
+      const categoryInput = document.getElementById('category');
+      const amountInput = document.getElementById('amount');
+      const noteInput = document.getElementById('note');
+
+      if (!date) {
+        alert('กรุณาเลือกวันที่');
+        return;
+      }
+
+      const title = titleInput.value.trim();
+      const category = categoryInput.value;
+      const amount = parseFloat(amountInput.value || '0');
+      const note = noteInput.value.trim();
+
+      if (!amount || amount <= 0) {
+        alert('กรุณากรอกยอดเงินให้ถูกต้อง');
+        return;
+      }
+
+      const list = loadTransactions();
+      list.push({
+        date,
+        type: currentType,
+        title,
+        category,
+        amount,
+        note
+      });
+      saveTransactions(list);
+
+      amountInput.value = '';
+      titleInput.value = '';
+      noteInput.value = '';
+
+      render();
+    }
+
+    function clearAll() {
+      if (confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        render();
+      }
+    }
+
+    window.onload = function () {
+      setToday();
+      render();
+    };
+  </script>
+</body>
+</html>
