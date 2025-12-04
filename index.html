@@ -94,7 +94,6 @@
     .field { margin-bottom: 8px; }
 
     input,
-    select,
     button {
       font-family: inherit;
       font-size: 14px;
@@ -102,8 +101,7 @@
 
     input[type="date"],
     input[type="number"],
-    input[type="text"],
-    select {
+    input[type="text"] {
       width: 100%;
       padding: 9px 11px;
       border-radius: 12px;
@@ -113,8 +111,7 @@
       transition: all 0.15s ease;
     }
 
-    input:focus,
-    select:focus {
+    input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 2px rgba(14,165,233,0.25);
       background: #ffffff;
@@ -201,6 +198,48 @@
     .btn-danger:active {
       transform: scale(0.97);
       background: #fecaca;
+    }
+
+    /* การ์ดหมวดหมู่ */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .cat-card {
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      padding: 6px 4px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #374151;
+      box-shadow: 0 2px 4px rgba(148,163,184,0.25);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .cat-icon {
+      font-size: 20px;
+    }
+
+    .cat-label {
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .cat-card.active {
+      border-color: #fb923c;
+      background: #fff7ed;
+      box-shadow: 0 4px 10px rgba(251,146,60,0.55);
+      color: #b45309;
+      font-weight: 600;
     }
 
     /* SUMMARY TAB */
@@ -338,7 +377,6 @@
     .legend-dot.expense { background: var(--expense-color); }
 
     .legend-label { font-weight: 600; }
-
     .legend-amount { font-weight: 600; }
     .legend-amount.income { color: var(--income-color); }
     .legend-amount.expense { color: var(--expense-color); }
@@ -483,8 +521,10 @@
           </div>
 
           <div class="field">
-            <label for="category">หมวดหมู่</label>
-            <select id="category"></select>
+            <label>หมวดหมู่</label>
+            <div id="categoryGrid" class="category-grid">
+              <!-- ปุ่มหมวดหมู่จะถูกเติมด้วย JS -->
+            </div>
           </div>
 
           <div class="button-row">
@@ -572,29 +612,30 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'money_note_transactions_v3';
+    const STORAGE_KEY = 'money_note_transactions_v4';
     let currentType = 'income';
+    let selectedCategoryKey = null;
 
     const incomeCategories = [
-      'เงินเดือน 💼',
-      'โบนัส 🎁',
-      'ปันผลหุ้น 💸',
-      'กำไรหุ้น / เทรด 📈',
-      'ดอกเบี้ยเงินฝาก 💰',
-      'รายได้เสริม 🌟',
-      'อื่น ๆ ✨'
+      { key: 'salary', label: 'เงินเดือน', icon: '💼' },
+      { key: 'bonus', label: 'โบนัส', icon: '🎁' },
+      { key: 'dividend', label: 'ปันผลหุ้น', icon: '💸' },
+      { key: 'stockGain', label: 'กำไรหุ้น / เทรด', icon: '📈' },
+      { key: 'interest', label: 'ดอกเบี้ยเงินฝาก', icon: '💰' },
+      { key: 'side', label: 'รายได้เสริม', icon: '🌟' },
+      { key: 'otherIncome', label: 'อื่น ๆ', icon: '✨' }
     ];
 
     const expenseCategories = [
-      'ค่าอาหาร 🍚',
-      'ค่าบ้าน 🏠',
-      'ค่ารถ 🚗',
-      'ค่าเดินทาง 🚆',
-      'ช้อปปิ้ง 🛍️',
-      'บันเทิง 🎬',
-      'สุขภาพ 🏥',
-      'บิล/ค่าสาธารณูปโภค 💡',
-      'อื่น ๆ ✨'
+      { key: 'food', label: 'ค่าอาหาร', icon: '🍚' },
+      { key: 'house', label: 'ค่าบ้าน', icon: '🏠' },
+      { key: 'car', label: 'ค่ารถ', icon: '🚗' },
+      { key: 'transport', label: 'ค่าเดินทาง', icon: '🚆' },
+      { key: 'shopping', label: 'ช้อปปิ้ง', icon: '🛍️' },
+      { key: 'entertain', label: 'บันเทิง', icon: '🎬' },
+      { key: 'health', label: 'สุขภาพ', icon: '🏥' },
+      { key: 'bill', label: 'บิล/ค่าสาธารณูปโภค', icon: '💡' },
+      { key: 'otherExpense', label: 'อื่น ๆ', icon: '✨' }
     ];
 
     function loadTransactions() {
@@ -636,24 +677,42 @@
       filterMonth.max = ym;
     }
 
-    function populateCategoryOptions() {
-      const select = document.getElementById('category');
-      const options = currentType === 'income' ? incomeCategories : expenseCategories;
-      const current = select.value;
-      select.innerHTML = '';
-      options.forEach(text => {
-        const opt = document.createElement('option');
-        opt.value = text;
-        opt.textContent = text;
-        select.appendChild(opt);
+    function getCurrentCategoryList() {
+      return currentType === 'income' ? incomeCategories : expenseCategories;
+    }
+
+    function populateCategoryGrid() {
+      const container = document.getElementById('categoryGrid');
+      container.innerHTML = '';
+      const categories = getCurrentCategoryList();
+
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cat-card' + (cat.key === selectedCategoryKey ? ' active' : '');
+        btn.addEventListener('click', () => {
+          selectedCategoryKey = cat.key;
+          populateCategoryGrid();
+        });
+
+        const icon = document.createElement('div');
+        icon.className = 'cat-icon';
+        icon.textContent = cat.icon;
+
+        const label = document.createElement('div');
+        label.className = 'cat-label';
+        label.textContent = cat.label;
+
+        btn.appendChild(icon);
+        btn.appendChild(label);
+        container.appendChild(btn);
       });
-      if (options.includes(current)) {
-        select.value = current;
-      }
     }
 
     function setType(type) {
       currentType = type;
+      selectedCategoryKey = null; // reset เมื่อเปลี่ยนประเภท
+
       const btnIncome = document.getElementById('btnIncome');
       const btnExpense = document.getElementById('btnExpense');
 
@@ -664,7 +723,7 @@
         btnExpense.classList.add('active-expense');
         btnIncome.classList.remove('active-income');
       }
-      populateCategoryOptions();
+      populateCategoryGrid();
     }
 
     function updatePieChart(totalIncome, totalExpense) {
@@ -784,11 +843,9 @@
       }
 
       const titleInput = document.getElementById('title');
-      const categoryInput = document.getElementById('category');
       const amountInput = document.getElementById('amount');
 
       const title = titleInput.value.trim();
-      const category = categoryInput.value;
       const amount = parseFloat(amountInput.value || '0');
 
       if (!amount || amount <= 0) {
@@ -796,12 +853,20 @@
         return;
       }
 
+      const catList = getCurrentCategoryList();
+      const catObj = catList.find(c => c.key === selectedCategoryKey);
+      if (!catObj) {
+        alert('กรุณาเลือกหมวดหมู่');
+        return;
+      }
+      const categoryText = `${catObj.label} ${catObj.icon}`;
+
       const list = loadTransactions();
       list.push({
         date,
         type: currentType,
         title,
-        category,
+        category: categoryText,
         amount
       });
       saveTransactions(list);
@@ -861,7 +926,7 @@
     window.onload = function () {
       setTodayAndMax();
       setupEvents();
-      populateCategoryOptions();
+      populateCategoryGrid();
       render();
     };
   </script>
