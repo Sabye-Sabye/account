@@ -383,7 +383,7 @@
     .legend-amount.income { color: var(--income-color); }
     .legend-amount.expense { color: var(--expense-color); }
 
-    /* รายงานแบบแบ่งวัน */
+    /* รายงานแบบแบ่งวัน / ตาราง */
     .report-container {
       max-height: 380px;
       overflow-y: auto;
@@ -427,6 +427,7 @@
       border-collapse: collapse;
       font-size: 12px;
       background: #ffffff;
+      table-layout: fixed;              /* คุมไม่ให้หลุดขอบ */
     }
 
     .day-table th,
@@ -434,6 +435,7 @@
       padding: 6px 8px;
       border-bottom: 1px solid #e5e7eb;
       text-align: left;
+      word-break: break-word;           /* ให้ตัดบรรทัดเมื่อข้อความยาว */
     }
 
     .day-table th {
@@ -679,7 +681,7 @@
         </div>
 
         <div class="table-panel">
-          <h2>รายการทั้งหมด (ตามปี)</h2>
+          <h2>เปรียบเทียบรายรับ–รายจ่ายรายเดือน</h2>
           <div id="reportContainerYear" class="report-container">
             <!-- เติมด้วย JS -->
           </div>
@@ -916,13 +918,15 @@
         formatNumber(balanceMonth) + ' ฿';
     }
 
-    function renderAndSummarize(list, config) {
-      const container = document.getElementById(config.containerId);
-      const balanceEl = document.getElementById(config.balanceId);
-      const pieChart = document.getElementById(config.pieChartId);
-      const pieCenter = document.getElementById(config.pieCenterId);
-      const legendIncome = document.getElementById(config.legendIncomeId);
-      const legendExpense = document.getElementById(config.legendExpenseId);
+    /* --- เรนเดอร์รายเดือน (พร้อมรายละเอียดรายวัน) --- */
+
+    function renderMonth(list) {
+      const container = document.getElementById('reportContainerMonth');
+      const balanceEl = document.getElementById('balanceMonth');
+      const pieChart = document.getElementById('pieChartMonth');
+      const pieCenter = document.getElementById('pieCenterLabelMonth');
+      const legendIncome = document.getElementById('legendIncomeMonth');
+      const legendExpense = document.getElementById('legendExpenseMonth');
 
       container.innerHTML = '';
 
@@ -932,7 +936,7 @@
       if (list.length === 0) {
         const div = document.createElement('div');
         div.className = 'no-data';
-        div.textContent = 'ยังไม่มีรายการในช่วงนี้';
+        div.textContent = 'ยังไม่มีรายการในเดือนนี้';
         container.appendChild(div);
 
         balanceEl.textContent = '0.00 ฿';
@@ -1051,31 +1055,112 @@
       updatePieChart(totalIncome, totalExpense, pieChart, pieCenter, legendIncome, legendExpense);
     }
 
+    /* --- เรนเดอร์รายปี (สรุปรายเดือนเท่านั้น) --- */
+    function renderYearSummary(listYear) {
+      const container = document.getElementById('reportContainerYear');
+      const balanceEl = document.getElementById('balanceYear');
+      const pieChart = document.getElementById('pieChartYear');
+      const pieCenter = document.getElementById('pieCenterLabelYear');
+      const legendIncome = document.getElementById('legendIncomeYear');
+      const legendExpense = document.getElementById('legendExpenseYear');
+
+      container.innerHTML = '';
+
+      if (listYear.length === 0) {
+        const div = document.createElement('div');
+        div.className = 'no-data';
+        div.textContent = 'ยังไม่มีรายการในปีนี้';
+        container.appendChild(div);
+
+        balanceEl.textContent = '0.00 ฿';
+        updatePieChart(0, 0, pieChart, pieCenter, legendIncome, legendExpense);
+        return;
+      }
+
+      const monthly = {}; // {month: {income, expense}}
+      let totalIncomeYear = 0;
+      let totalExpenseYear = 0;
+
+      listYear.forEach(item => {
+        const [y, m] = item.date.split('-').map(v => parseInt(v, 10));
+        if (!monthly[m]) {
+          monthly[m] = { income: 0, expense: 0 };
+        }
+        if (item.type === 'income') {
+          monthly[m].income += item.amount;
+          totalIncomeYear += item.amount;
+        } else {
+          monthly[m].expense += item.amount;
+          totalExpenseYear += item.amount;
+        }
+      });
+
+      const monthsOrder = Object.keys(monthly)
+        .map(Number)
+        .sort((a, b) => a - b);
+
+      const monthsTH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                        'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+      const table = document.createElement('table');
+      table.className = 'day-table';
+      const thead = document.createElement('thead');
+      thead.innerHTML = `
+        <tr>
+          <th>เดือน</th>
+          <th class="text-right">รายรับ</th>
+          <th class="text-right">รายจ่าย</th>
+          <th class="text-right">คงเหลือ</th>
+        </tr>
+      `;
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+
+      monthsOrder.forEach(m => {
+        const info = monthly[m];
+        const balance = info.income - info.expense;
+
+        const tr = document.createElement('tr');
+        const tdMonth = document.createElement('td');
+        tdMonth.textContent = monthsTH[m - 1];
+        tr.appendChild(tdMonth);
+
+        const tdIncome = document.createElement('td');
+        tdIncome.className = 'text-right';
+        tdIncome.textContent = formatNumber(info.income);
+        tr.appendChild(tdIncome);
+
+        const tdExpense = document.createElement('td');
+        tdExpense.className = 'text-right';
+        tdExpense.textContent = formatNumber(info.expense);
+        tr.appendChild(tdExpense);
+
+        const tdBal = document.createElement('td');
+        tdBal.className = 'text-right';
+        tdBal.textContent = formatNumber(balance);
+        tr.appendChild(tdBal);
+
+        tbody.appendChild(tr);
+      });
+
+      table.appendChild(tbody);
+      container.appendChild(table);
+
+      balanceEl.textContent =
+        formatNumber(totalIncomeYear - totalExpenseYear) + ' ฿';
+      updatePieChart(totalIncomeYear, totalExpenseYear,
+        pieChart, pieCenter, legendIncome, legendExpense);
+    }
+
     function refreshUI() {
       const allList = loadTransactions();
+
       const listMonth = getFilteredByMonth(allList);
       const listYear = getFilteredByYear(allList);
 
-      const monthConfig = {
-        containerId: 'reportContainerMonth',
-        balanceId: 'balanceMonth',
-        pieChartId: 'pieChartMonth',
-        pieCenterId: 'pieCenterLabelMonth',
-        legendIncomeId: 'legendIncomeMonth',
-        legendExpenseId: 'legendExpenseMonth'
-      };
-
-      const yearConfig = {
-        containerId: 'reportContainerYear',
-        balanceId: 'balanceYear',
-        pieChartId: 'pieChartYear',
-        pieCenterId: 'pieCenterLabelYear',
-        legendIncomeId: 'legendIncomeYear',
-        legendExpenseId: 'legendExpenseYear'
-      };
-
-      renderAndSummarize(listMonth, monthConfig);
-      renderAndSummarize(listYear, yearConfig);
+      renderMonth(listMonth);
+      renderYearSummary(listYear);
       updateMonthBalance(allList);
     }
 
