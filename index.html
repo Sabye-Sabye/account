@@ -445,12 +445,18 @@
       display: none;
     }
 
-    .day-table-wrapper {
+    .day-table-outer {
       margin-top: 6px;
       border-radius: 14px;
-      overflow: hidden;
       background: #ffffff;
       box-shadow: 0 2px 4px rgba(148,163,184,0.35);
+      overflow: hidden;
+    }
+
+    .day-table-scroll {
+      max-height: 200px;                /* ความสูงสูงสุดต่อวัน */
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .day-table {
@@ -1025,8 +1031,11 @@
         const body = document.createElement('div');
         body.className = 'day-body';
 
-        const tableWrapper = document.createElement('div');
-        tableWrapper.className = 'day-table-wrapper';
+        const tableOuter = document.createElement('div');
+        tableOuter.className = 'day-table-outer';
+
+        const tableScroll = document.createElement('div');
+        tableScroll.className = 'day-table-scroll';
 
         const table = document.createElement('table');
         table.className = 'day-table';
@@ -1099,8 +1108,9 @@
         });
 
         table.appendChild(tbody);
-        tableWrapper.appendChild(table);
-        body.appendChild(tableWrapper);
+        tableScroll.appendChild(table);
+        tableOuter.appendChild(tableScroll);
+        body.appendChild(tableOuter);
         card.appendChild(body);
 
         // toggle แสดง/ซ่อน
